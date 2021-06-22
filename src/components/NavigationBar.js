@@ -27,8 +27,24 @@ export default function NavigationBar(props) {
     setShowLoginModal(false);
   };
 
-  const handleLogin = (email, password) => {
+  const handleLogin = async (email, password) => {
     console.log(email, password);
+
+    const url = 'http://localhost:8000/auth';
+
+    const params = {
+      email,
+      password,
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(params),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const data = await response.json();
+
+    console.log(data);
   };
 
   return (

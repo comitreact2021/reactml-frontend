@@ -1,14 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PubCard from './PubCard';
+import Row from 'react-bootstrap/Row';
 
 export default function PubsList() {
+  const [publicaciones, setPublicaciones] = useState([]);
+
+  useEffect(getPubs, []);
+
+  async function getPubs() {
+    const url = 'http://localhost:8000/publicaciones';
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    setPublicaciones(data);
+  }
+
+  function getCards() {
+    const cards = publicaciones.map((publicacion) => {
+      return (
+        <PubCard
+          titulo={publicacion.titulo}
+          precio={publicacion.precio}
+          imagen={publicacion.imagen}
+        />
+      );
+    });
+
+    return cards;
+  }
+
   return (
-    <>
-      <PubCard titulo="Heladera" precio={200} imagen="heladera.webp" />
-      <PubCard titulo="RAM" precio={300} imagen="ram.webp" />
-      <PubCard titulo="Go Pro" precio={400} imagen="gopro.webp" />
-      <PubCard titulo="Micro" precio={500} imagen="micro.webp" />
-      <PubCard titulo="Parlantes" precio={600} imagen="parlantes.webp" />
-    </>
+    <Row className="row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 row-cols-xl-6">
+      {getCards()}
+    </Row>
   );
 }

@@ -1,22 +1,26 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
 
 export default function PubCard(props) {
   const imageUrl = `http://localhost:8000/images/${props.imagen}`;
 
+  const cardImageStyle = {
+    height: '40vh',
+    objectFit: 'contain',
+  };
+
   return (
-    <Card style={{ width: '18rem' }}>
-      <Card.Img variant="top" src={imageUrl} />
+    <Col className="my-4">
+      <Card className="h-100">
+        <Card.Img style={cardImageStyle} variant="top" src={imageUrl} />
 
-      <Card.Body>
-        <Card.Title>{props.titulo}</Card.Title>
-        <Card.Text>
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </Card.Text>
-      </Card.Body>
+        <Card.Body>
+          <Card.Title>{props.titulo}</Card.Title>
+        </Card.Body>
 
-      <Card.Footer className="text-muted">$ {props.precio}</Card.Footer>
-    </Card>
+        <Card.Footer className="text-muted">$ {props.precio}</Card.Footer>
+      </Card>
+    </Col>
   );
 }
