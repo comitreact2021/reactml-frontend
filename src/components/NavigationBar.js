@@ -41,7 +41,9 @@ export default function NavigationBar(props) {
       method: 'POST',
       body: JSON.stringify(params),
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
     });
+
     const data = await response.json();
 
     console.log(data);
