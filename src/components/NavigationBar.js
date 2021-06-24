@@ -46,7 +46,31 @@ export default function NavigationBar(props) {
 
     const data = await response.json();
 
+    if (response.status === 200) {
+      props.updateUser({ name: data.data });
+
+      handleCloseLoginModal();
+    } else {
+      alert(data.message);
+    }
     console.log(data);
+  };
+
+  const handleLogout = async () => {
+    const url = 'http://localhost:8000/auth';
+
+    const response = await fetch(url, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+
+    const data = response.json();
+
+    if (response.status === 200) {
+      props.updateUser(null);
+    } else {
+      alert(data.message);
+    }
   };
 
   return (
@@ -76,7 +100,7 @@ export default function NavigationBar(props) {
 
                   <NavDropdown.Divider />
 
-                  <NavDropdown.Item href="#action/3.4">
+                  <NavDropdown.Item onClick={handleLogout}>
                     Cerrar sesión
                   </NavDropdown.Item>
                 </NavDropdown>
