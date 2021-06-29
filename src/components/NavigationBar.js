@@ -10,6 +10,8 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 //IMAGES
 import logo from '../assets/images/logo.png';
 
+import { Link } from 'react-router-dom';
+
 import LoginModal from './LoginModal';
 
 export default function NavigationBar(props) {
@@ -76,9 +78,11 @@ export default function NavigationBar(props) {
   return (
     <>
       <Navbar style={navbarStyle} expand="lg">
-        <Navbar.Brand href="#home">
-          <img src={logo} />
-        </Navbar.Brand>
+        <Link to="/">
+          <Navbar.Brand href="#home">
+            <img src={logo} />
+          </Navbar.Brand>
+        </Link>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
@@ -86,8 +90,12 @@ export default function NavigationBar(props) {
           <Nav className="ml-auto">
             {props.user ? (
               <>
-                <Nav.Link href="#home">Mis publicaciones</Nav.Link>
-                <Nav.Link href="#link">Favoritos</Nav.Link>
+                <Link to="/mispublicaciones" className="nav-link">
+                  Mis publicaciones
+                </Link>
+                <Link to="/favoritos" className="nav-link">
+                  Favoritos
+                </Link>
 
                 <NavDropdown
                   alignRight
