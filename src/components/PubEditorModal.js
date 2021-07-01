@@ -57,18 +57,50 @@ export default function PubEditorModal(props) {
     formData.append('pubImage', pubImage);
     formData.append('pubCategory', pubCategory);
 
-    const url = 'http://localhost:8000/publicaciones';
+    let url, method;
+
+    if (props.idPub) {
+      //Modo edicion
+      url = `http://localhost:8000/publicaciones/${props.idPub}`;
+      method = 'PUT';
+    } else {
+      //Modo nuevo
+      url = `http://localhost:8000/publicaciones`;
+      method = 'POST';
+    }
 
     fetch(url, {
-      method: 'POST',
+      method: method,
       body: formData,
       credentials: 'include',
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        props.onPubSaved(data.message);
       });
   };
+
+  useEffect(() => {
+    if (props.idPub) {
+      const url = `http://localhost:8000/publicaciones/${props.idPub}`;
+
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+          setPubTitulo(data.titulo);
+          setPubPrice(data.precio);
+          setPubImage('');
+          setPreviewPubImage(`http://localhost:8000/images/${data.imagen}`);
+          setPubCategory(data.cat_id);
+        });
+    } else {
+      setPubTitulo('');
+      setPubPrice('');
+      setPubImage('');
+      setPreviewPubImage('');
+      setPubCategory('');
+    }
+  }, [props.idPub]);
 
   return (
     <Modal show={props.show} onHide={props.handleHide}>

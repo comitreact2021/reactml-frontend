@@ -4,10 +4,13 @@ import Row from 'react-bootstrap/Row';
 import NavBarMisPublicaciones from './NavBarMisPublicaciones';
 import PubEditorModal from './PubEditorModal';
 
+import Swal from 'sweetalert2';
+
 export default function PubsList(props) {
   const [publicaciones, setPublicaciones] = useState([]);
 
   const [showPubEditorModal, setShowPubEditorModal] = useState(false);
+  const [selectedPub, setSelectedPub] = useState(null);
 
   useEffect(getPubs, [props.type]);
 
@@ -35,6 +38,7 @@ export default function PubsList(props) {
           imagen={publicacion.imagen}
           id={publicacion.id}
           type={props.type}
+          onEditClick={handleEditClick}
         />
       );
     });
@@ -43,11 +47,30 @@ export default function PubsList(props) {
   }
 
   const handleShowPubEditorModal = () => {
+    setSelectedPub(null);
     setShowPubEditorModal(true);
   };
 
   const handleHidePubEditorModal = () => {
     setShowPubEditorModal(false);
+  };
+
+  const handlePubSaved = (message) => {
+    getPubs();
+    handleHidePubEditorModal();
+
+    Swal.fire({
+      text: message,
+      icon: 'success',
+    });
+  };
+
+  const handleEditClick = (idPub) => {
+    console.log('Cargar los datos de la publicacion ' + idPub);
+
+    setSelectedPub(idPub);
+
+    setShowPubEditorModal(true);
   };
 
   return (
@@ -63,6 +86,8 @@ export default function PubsList(props) {
       <PubEditorModal
         show={showPubEditorModal}
         handleHide={handleHidePubEditorModal}
+        onPubSaved={handlePubSaved}
+        idPub={selectedPub}
       />
     </>
   );

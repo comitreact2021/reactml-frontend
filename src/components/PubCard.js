@@ -19,7 +19,7 @@ export default function PubCard(props) {
 
   const handleEditClick = (event) => {
     event.preventDefault();
-    alert('Editar');
+    props.onEditClick(props.id);
   };
 
   const handleDeleteClick = (event) => {
