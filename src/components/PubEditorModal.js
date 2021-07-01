@@ -7,6 +7,14 @@ import Form from 'react-bootstrap/Form';
 export default function PubEditorModal(props) {
   const [categorias, setCategorias] = useState([]);
 
+  const [pubTitulo, setPubTitulo] = useState('');
+  const [pubPrice, setPubPrice] = useState('');
+
+  const [pubImage, setPubImage] = useState('');
+  const [previewPubImage, setPreviewPubImage] = useState('');
+
+  const [pubCategory, setPubCategory] = useState('');
+
   useEffect(() => {
     const url = 'http://localhost:8000/categorias';
 
@@ -23,6 +31,45 @@ export default function PubEditorModal(props) {
     ));
   }
 
+  const handlePubTituloChange = (event) => {
+    setPubTitulo(event.target.value);
+  };
+
+  const handlePubPriceChange = (event) => {
+    setPubPrice(event.target.value);
+  };
+
+  const handleCategoryChange = (event) => {
+    setPubCategory(event.target.value);
+  };
+
+  const handlePubImageChange = (event) => {
+    setPubImage(event.target.files[0]);
+
+    setPreviewPubImage(URL.createObjectURL(event.target.files[0]));
+  };
+
+  const handleSave = () => {
+    const formData = new FormData();
+
+    formData.append('pubTitulo', pubTitulo);
+    formData.append('pubPrice', pubPrice);
+    formData.append('pubImage', pubImage);
+    formData.append('pubCategory', pubCategory);
+
+    const url = 'http://localhost:8000/publicaciones';
+
+    fetch(url, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      });
+  };
+
   return (
     <Modal show={props.show} onHide={props.handleHide}>
       <Modal.Header closeButton>Publicacion</Modal.Header>
@@ -31,29 +78,42 @@ export default function PubEditorModal(props) {
         <Form>
           <Form.Group>
             <Form.Label>Titulo</Form.Label>
-            <Form.Control type="text"></Form.Control>
+            <Form.Control
+              type="text"
+              value={pubTitulo}
+              onChange={handlePubTituloChange}
+            ></Form.Control>
           </Form.Group>
 
           <Form.Group>
             <Form.Label>Precio</Form.Label>
-            <Form.Control type="text"></Form.Control>
+            <Form.Control
+              type="text"
+              value={pubPrice}
+              onChange={handlePubPriceChange}
+            ></Form.Control>
           </Form.Group>
 
           <Form.Group>
             <Form.Label>Categoria</Form.Label>
-            <Form.Control as="select">{getCategoriesOptions()}</Form.Control>
+            <Form.Control
+              as="select"
+              value={pubCategory}
+              onChange={handleCategoryChange}
+            >
+              {getCategoriesOptions()}
+            </Form.Control>
           </Form.Group>
 
           <Form.Group className="d-flex justify-content-center">
-            <img
-              style={{ height: '25vh' }}
-              src="http://localhost:8000/images/heladera.webp"
-            />
+            {previewPubImage && (
+              <img style={{ height: '25vh' }} src={previewPubImage} />
+            )}
           </Form.Group>
 
           <Form.Group>
             <Form.Label>Imagen</Form.Label>
-            <Form.Control type="file" />
+            <Form.Control type="file" onChange={handlePubImageChange} />
           </Form.Group>
         </Form>
       </Modal.Body>
@@ -62,7 +122,7 @@ export default function PubEditorModal(props) {
         <Button variant="secondary" onClick={props.handleHide}>
           Cancelar
         </Button>
-        <Button>Guardar</Button>
+        <Button onClick={handleSave}>Guardar</Button>
       </Modal.Footer>
     </Modal>
   );
