@@ -39,6 +39,7 @@ export default function PubsList(props) {
           id={publicacion.id}
           type={props.type}
           onEditClick={handleEditClick}
+          onDeleteClick={handleDeleteClick}
         />
       );
     });
@@ -71,6 +72,35 @@ export default function PubsList(props) {
     setSelectedPub(idPub);
 
     setShowPubEditorModal(true);
+  };
+
+  const handleDeleteClick = async (idPub) => {
+    const confirm = await Swal.fire({
+      title: '¿Confirma que desea eliminar la publicación?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+    });
+
+    //El usuario pulso Aceptar
+    if (confirm.value) {
+      const url = `http://localhost:8000/publicaciones/${idPub}`;
+
+      const response = await fetch(url, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      const data = await response.json();
+
+      if (data.status === 'ok') {
+        getPubs();
+        Swal.fire({ title: data.message, icon: 'success' });
+      } else {
+        Swal.fire({ title: data.message, icon: 'error' });
+      }
+    }
   };
 
   return (
